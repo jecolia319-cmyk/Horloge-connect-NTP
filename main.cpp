@@ -7,10 +7,10 @@
 #include <UrlEncode.h>
 
 // --- IDENTIFIANTS WI-FI ---
-const char* ssid     = "youpilab_fibre 2G";
-const char* password = "Washingi_loV3_yl2025Fibre#Cit1";
-const String APP_ID  = "horcda6c";
-const String APP_KEY = "7dc74c4c";
+const char* ssid     = "";
+const char* password = "";
+const String APP_ID  = "********";
+const String APP_KEY = "********";
 const String server  = "http://iot.youpilab.com/api";
 
 // --- CONFIGURATION NTP ---
