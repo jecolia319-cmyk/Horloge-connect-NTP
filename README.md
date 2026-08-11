@@ -1,64 +1,74 @@
-# Horloge_Alarme
+# 🕐 Horloge Alarme Connectée (ESP8266 + NTP)
 
-Petit réveil basé sur ESP8266, RTC DS1302 et afficheur TM1637.
+Réveil connecté basé sur ESP8266, avec synchronisation automatique de l'heure via internet (NTP) et notification à distance si l'alarme n'est pas arrêtée.
 
-## Fonctionnalités
-- Affichage heure/date sur TM1637
-- Synchronisation NTP et écriture dans le RTC DS1302
-- Réglage alarme (boutons Heure / Minute)
-- Arrêt alarme (bouton STOP)
+![Photo du projet](20260730_193038.jpg)
+
+## 🎯 Pourquoi ce projet
+
+Un réveil classique doit être réglé manuellement et peut dériver dans le temps. Ici, l'heure se synchronise automatiquement dès que l'appareil a internet, garantissant une précision constante — avec en bonus une notification à distance en cas d'oubli d'arrêter l'alarme.
+
+## ⚙️ Fonctionnalités
+- Affichage heure/date sur afficheur TM1637
+- Synchronisation NTP automatique, écrite dans le module RTC DS1302 (garde l'heure même sans WiFi)
+- Réglage de l'alarme via boutons dédiés (Heure / Minute)
+- Arrêt de l'alarme (bouton STOP)
 - Buzzer + LED pendant la sonnerie
-- Envoi d'une notification HTTP si l'alarme n'est pas arrêtée (webhook IoT)
+- **Notification HTTP (webhook)** envoyée automatiquement si l'alarme n'est pas arrêtée — utile pour être alerté à distance
 
-## Fichiers clés
-- `src/main.cpp` : logique principale (initialisation, loop, alarmes, notifications)
+## 🔧 Matériel utilisé
+| Composant | Rôle |
+|---|---|
+| ESP8266 (NodeMCU / Wemos) | Microcontrôleur principal, gère le WiFi |
+| RTC DS1302 | Garde l'heure précise même hors tension |
+| Afficheur TM1637 (4 digits) | Affichage heure/date |
+| Buzzer + LED | Alerte sonore et visuelle |
+| 3 boutons | Réglage Heure / Minute / Stop |
 
-## Configuration
-- Mettre `ssid` et `password` dans `src/main.cpp` (ou extraire dans un fichier `config.h` ignoré par git).
-- Définir `APP_ID`, `APP_KEY` et `server` dans `src/main.cpp` si vous voulez utiliser les notifications.
+## 🔌 Brochage
+| Fonction | Pin |
+|---|---|
+| Afficheur CLK | D1 |
+| Afficheur DIO | D2 |
+| Bouton Heure | D3 |
+| Bouton Minute | D4 |
+| Bouton Stop | GPIO3 (RX) |
+| RTC RST / CLK / DAT | D7 / D5 / D6 |
+| Buzzer | D0 |
+| LED rouge | D8 |
 
-Important : évitez de commiter vos identifiants Wi‑Fi et clés API dans le dépôt public.
+## 📁 Fichiers clés
+- `src/main.cpp` : logique principale (initialisation, boucle, gestion des alarmes, notifications)
 
-## Matériel
-- ESP8266 (NodeMCU / Wemos)
-- Module RTC DS1302 (connecté aux broches définies dans `src/main.cpp`)
-- Afficheur 4 digits TM1637 (pins `DISPLAY_CLK`, `DISPLAY_DIO`)
-- Buzzer + LED
-- 3 boutons (Heure, Minute, Stop)
+## 🚀 Compilation et téléversement (PlatformIO)
+Ouvrir le projet dans VS Code + extension PlatformIO, puis :
 
-## Brochage (par défaut dans le code)
-- `DISPLAY_CLK` = D1
-- `DISPLAY_DIO` = D2
-- `BTN_HEURE` = D3
-- `BTN_MINUTE` = D4
-- `BTN_STOP` = GPIO3 (RX)
-- `RTC_RST` = D7, `RTC_CLK` = D5, `RTC_DAT` = D6
-- `BUZZER_PIN` = D0, `LED_ROUGE` = D8
-
-## Compilation et téléversement (PlatformIO)
-Ouvrir le projet dans VS Code + PlatformIO puis :
-
-```bash
+\`\`\`bash
 # Compiler
 platformio run
 
-# Téléverser
+# Téléverser sur la carte
 platformio run --target upload
-```
+\`\`\`
 
-## Notes et améliorations possibles
-- Remplacer `delay()` par debounce non bloquant pour une meilleure réactivité
-- Stocker les réglages d'alarme dans la RAM du RTC ou SPIFFS pour persister après coupure
-- Extraire les identifiants et clés dans un fichier `config.h` ignoré par `.gitignore`
-- Ajouter gestion des erreurs réseau et retries pour les notifications
+## ⚙️ Configuration
+- Renseigner `ssid` et `password` dans `src/main.cpp` (idéalement à extraire dans un fichier `config.h` ignoré par git)
+- Définir `APP_ID`, `APP_KEY` et `server` dans `src/main.cpp` pour activer les notifications
 
-## Dépannage
-- Si la connexion Wi‑Fi échoue, vérifiez SSID/mot de passe et la portée.
-- Si l'heure NTP ne se synchronise pas, vérifiez que l'appareil a internet et que `configTime()` est supporté.
+⚠️ Ne jamais commiter vos identifiants WiFi et clés API dans un dépôt public.
+
+## 🎥 Démo
+[Lien vers la vidéo de démonstration](TON_LIEN_YOUTUBE)
+
+## 💡 Améliorations possibles
+- Remplacer `delay()` par un debounce non bloquant pour une meilleure réactivité
+- Stocker les réglages d'alarme en RAM du RTC ou en SPIFFS pour les conserver après coupure
+- Extraire identifiants et clés dans un `config.h.example` (ignoré par `.gitignore`)
+- Ajouter la gestion des erreurs réseau et des tentatives de reconnexion
+
+## 🛠️ Dépannage
+- Connexion WiFi échoue → vérifier SSID/mot de passe et la portée du signal
+- Heure NTP non synchronisée → vérifier la connexion internet et que `configTime()` est bien supporté
 
 ---
-
-Si tu veux, je peux :
-- ajouter un `config.h.example` pour centraliser les identifiants,
-- implémenter un debounce non bloquant,
-- ou lancer une compilation PlatformIO et corriger d'éventuelles erreurs.
+*Projet réalisé par [ton nom] — étudiant en électrotechnique/systèmes embarqués*
